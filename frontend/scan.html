@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan QR & Record Attendance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #eaf1fb 0%, #f4f8fb 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(42,93,159,0.10);
+      padding: 0 0 32px 0;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+    }
+    .header {
+      width: 100%;
+      background: linear-gradient(90deg, #2a5d9f 60%, #4e8cff 100%);
+      border-radius: 20px 20px 0 0;
+      padding: 32px 0 18px 0;
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(42,93,159,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header i {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .header h2 {
+      margin: 0;
+      font-size: 1.5em;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    #reader {
+      margin: 28px auto 0 auto;
+      background: #eaf1fb;
+      padding: 0;
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 340px;
+      height: 340px;
+      max-width: 90vw;
+      max-height: 90vw;
+      min-width: 220px;
+      min-height: 220px;
+      box-shadow: 0 4px 24px rgba(42,93,159,0.10);
+      position: relative;
+    }
+    pre#result {
+      background: #f7fafd;
+      color: #2a5d9f;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 1.08em;
+      margin: 24px auto 0 auto;
+      min-height: 36px;
+      max-width: 340px;
+      word-break: break-all;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(42,93,159,0.06);
+      font-family: 'Roboto Mono', monospace;
+      letter-spacing: 0.2px;
+    }
+    .back-link {
+      color: #2a5d9f;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 28px;
+      font-size: 1.1em;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #17406a; text-decoration: underline; }
+    @media (max-width: 700px) {
+      .container { max-width: 100vw; border-radius: 0; }
+      .header { border-radius: 0; padding: 24px 0 12px 0; }
+      .header h2 { font-size: 1.1em; }
+      #reader {
+        width: 90vw;
+        height: 90vw;
+        min-width: 180px;
+        min-height: 180px;
+        max-width: 98vw;
+        max-height: 98vw;
+      }
+      pre#result { font-size: 0.98em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <i class="fa-solid fa-qrcode"></i>
+      <h2>Scan QR Code & Record Attendance</h2>
+    </div>
+    <div id="reader"></div>
+    <pre id="result"></pre>
+    <a class="back-link" href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+  </div>
+  <script>
+    let attendedIds = JSON.parse(sessionStorage.getItem('attendedIds') || '[]');
+
+    // Secure context check
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      document.getElementById('result').innerHTML = `<span style='color:#d32f2f;font-weight:600;'>Camera access is only supported in secure contexts (HTTPS or localhost). Please use https:// or http://localhost to access this page.</span>`;
+      console.error('Camera access blocked: not a secure context.');
+    } else {
+      function onScanSuccess(decodedText) {
+        submitAttendance(decodedText);
+      }
+
+      function submitAttendance(qrData) {
+        let student;
+        try {
+          student = JSON.parse(qrData);
+        } catch (err) {
+          document.getElementById('result').textContent = 'Invalid QR code data!';
+          return;
+        }
+        // Check for required fields
+        if (!student.id || !student.name || !student.class) {
+          document.getElementById('result').textContent = 'QR code is missing required fields!';
+          return;
+        }
+        let displayText = `ID: ${student.id}\nName: ${student.name}\nClass: ${student.class}`;
+        if (student.team) displayText += `\nTeam: ${student.team}`;
+        if (attendedIds.includes(student.id)) {
+          document.getElementById('result').textContent = 'Attendance already recorded for this student in this session!';
+          return;
+        }
+        document.getElementById('result').textContent = 'Processing...';
+        fetch('http://192.168.18.2:3000/attendance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(student)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            attendedIds.push(student.id);
+            sessionStorage.setItem('attendedIds', JSON.stringify(attendedIds));
+            document.getElementById('result').textContent = displayText + '\nAttendance recorded!';
+          } else if (data.status === 'duplicate') {
+            document.getElementById('result').textContent = displayText + '\nAttendance already recorded for today!';
+          } else {
+            document.getElementById('result').textContent = displayText + '\nUnknown error.';
+          }
+        })
+        .catch(() => {
+          document.getElementById('result').textContent = displayText + '\nFailed to connect to backend!';
+        });
+      }
+
+      // Camera initialization
+      if (window.Html5QrcodeScanner) {
+        const scanner = new Html5QrcodeScanner(
+          "reader",
+          {
+            fps: 15,
+            qrbox: { width: 260, height: 260 },
+            aspectRatio: 1,
+            rememberLastUsedCamera: true,
+            showTorchButtonIfSupported: true,
+            supportedScanTypes: [window.Html5QrcodeScanType ? Html5QrcodeScanType.SCAN_TYPE_CAMERA : 2]
+          },
+          false
+        );
+        scanner.render(
+          onScanSuccess,
+          function onScanError(errorMessage) {
+            // Only display error if no camera or permission denied
+            if (errorMessage &&
+              (errorMessage.toLowerCase().includes('notallowederror') ||
+               errorMessage.toLowerCase().includes('permission') ||
+               errorMessage.toLowerCase().includes('notfounderror') ||
+               errorMessage.toLowerCase().includes('no camera'))
+            ) {
+              let msg = 'Camera error: ' + errorMessage;
+              if (errorMessage && (errorMessage.toLowerCase().includes('notallowederror') || errorMessage.toLowerCase().includes('permission'))) {
+                msg = 'Camera access was denied. Please allow camera permissions in your browser settings and reload the page.';
+              } else if (errorMessage && (errorMessage.toLowerCase().includes('notfounderror') || errorMessage.toLowerCase().includes('no camera'))) {
+                msg = 'No camera was found on this device.';
+              }
+              document.getElementById('result').innerHTML = `<span style='color:#d32f2f;font-weight:600;'>${msg}</span>`;
+              console.error('Camera error:', errorMessage);
+            }
+          }
+        );
+        console.log('Html5QrcodeScanner initialized.');
+      } else {
+        document.getElementById('result').innerHTML = `<span style='color:#d32f2f;font-weight:600;'>Camera library failed to load. Please refresh the page or try a different browser.</span>`;
+        console.error('Camera library failed to load.');
+      }
+    }
+</script>
+</body>
+</html>
