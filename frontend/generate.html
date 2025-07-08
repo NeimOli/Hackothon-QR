@@ -5,170 +5,371 @@
   <title>Generate Student QR Code</title>
   <script src="qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
-      background: #f4f8fb;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
     .container {
-      max-width: 420px;
-      margin: 60px auto;
+      max-width: 500px;
+      width: 95%;
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      padding: 32px 24px 24px 24px;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(220, 53, 69, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .header {
+      width: 100%;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
+      padding: 40px 20px 30px 20px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .header i {
+      font-size: 3.5em;
+      margin-bottom: 15px;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 2em;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .content {
+      padding: 40px 20px;
       text-align: center;
     }
-    h2 {
-      color: #2a5d9f;
-      margin-bottom: 24px;
+
+    form {
+      width: 100%;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    label {
+      color: #d63031;
+      font-weight: 700;
+      text-align: left;
+      font-size: 1.2em;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 18px;
+      border: 2px solid #ffe8e8;
+      border-radius: 15px;
+      font-size: 1.2em;
+      box-sizing: border-box;
+      background: #fff5f5;
+      transition: all 0.3s ease;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    input[type="text"]:focus {
+      border: 2px solid #d63031;
+      outline: none;
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+      transform: translateY(-2px);
+    }
+
+    button {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      padding: 20px 0;
+      font-size: 1.3em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(220, 53, 69, 0.4);
+    }
+
+    #qr-card {
+      margin: 35px auto 0 auto;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      padding: 35px 25px;
+      border-radius: 20px;
+      display: none;
+      box-shadow: 0 15px 40px rgba(220, 53, 69, 0.15);
+      animation: slideIn 0.6s ease;
+      border: 2px solid #ffe8e8;
+    }
+
+    #qr-card h3 {
+      color: #d63031;
+      margin-bottom: 25px;
       font-size: 1.6em;
       font-weight: 700;
     }
-    form {
-      margin-bottom: 18px;
+
+    @keyframes slideIn {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-    label {
-      display: block;
-      margin: 12px 0 6px 0;
-      color: #2a5d9f;
-      font-weight: 500;
-      text-align: left;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #b6c6e3;
-      border-radius: 6px;
-      font-size: 1em;
-      margin-bottom: 8px;
-      box-sizing: border-box;
-    }
-    button {
-      background: #2a5d9f;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 12px 32px;
-      font-size: 1.1em;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background: #17406a;
-    }
-    #qr-card {
-      margin: 24px auto 0 auto;
-      background: #eaf1fb;
-      padding: 24px 18px 32px 18px;
-      border-radius: 16px;
-      display: none;
-      min-width: 256px;
-      box-shadow: 0 2px 12px rgba(42,93,159,0.10);
-      animation: fadeIn 0.7s;
-    }
-    #qr-card h3 {
-      color: #2a5d9f;
-      margin-bottom: 12px;
-      font-size: 1.2em;
-      font-weight: 600;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95);}
-      to { opacity: 1; transform: scale(1);}
-    }
+
     #qrcode {
       margin: 0 auto;
       background: #fff;
-      padding: 12px;
-      border-radius: 12px;
+      padding: 25px;
+      border-radius: 20px;
       display: inline-block;
-      min-height: 256px;
-      min-width: 256px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border: 2px solid #ffe8e8;
     }
+
     #download-btn {
-      background: #2a5d9f;
+      background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
       color: #fff;
       border: none;
-      border-radius: 6px;
-      padding: 10px 28px;
-      font-size: 1em;
-      font-weight: 600;
+      border-radius: 15px;
+      padding: 18px 0;
+      font-size: 1.2em;
+      font-weight: 700;
       cursor: pointer;
-      margin-top: 16px;
+      margin-top: 25px;
       display: none;
-      transition: background 0.2s;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0, 184, 148, 0.3);
     }
+
     #download-btn:hover {
-      background: #17406a;
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 184, 148, 0.4);
     }
+
+    .error-msg {
+      color: #e74c3c;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: none;
+      background: #fdf2f2;
+      padding: 18px;
+      border-radius: 15px;
+      font-size: 1.2em;
+      border: 2px solid #fadbd8;
+    }
+
+    .success-msg {
+      color: #27ae60;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: none;
+      background: #f0fdf4;
+      padding: 18px;
+      border-radius: 15px;
+      font-size: 1.2em;
+      border: 2px solid #bbf7d0;
+    }
+
     a {
-      color: #2a5d9f;
+      color: #d63031;
       text-decoration: none;
-      font-weight: 500;
-      display: inline-block;
-      margin-top: 18px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 35px;
+      font-size: 1.2em;
+      padding: 18px 35px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+      transition: all 0.3s ease;
+      border: 2px solid #ffe8e8;
     }
-    a:hover { text-decoration: underline; }
-    @media (max-width: 500px) {
-      .container { max-width: 98vw; padding: 18px 4vw; }
-      h2 { font-size: 1.1em; }
-      #qr-card { min-width: 180px; }
-      #qrcode { min-width: 140px; min-height: 140px; }
+
+    a:hover {
+      color: #b71540;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.25);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .container {
+        width: 100%;
+        border-radius: 0;
+        min-height: 100vh;
+      }
+
+      .header {
+        border-radius: 0;
+        padding: 30px 15px 20px 15px;
+      }
+
+      .header h2 {
+        font-size: 1.6em;
+      }
+
+      .content {
+        padding: 30px 15px;
+      }
+
+      #qr-card {
+        padding: 25px 20px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .header h2 {
+        font-size: 1.4em;
+      }
+
+      .header i {
+        font-size: 3em;
+      }
+
+      input[type="text"] {
+        padding: 15px;
+        font-size: 1.1em;
+      }
+
+      button {
+        padding: 18px 0;
+        font-size: 1.2em;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Generate Student QR Code</h2>
-    <form id="student-form">
-      <label for="id">ID:</label>
-      <input type="text" id="id" required>
-      <label for="name">Name:</label>
-      <input type="text" id="name" required>
-      <label for="class">Class:</label>
-      <input type="text" id="class" required>
-      <label for="team">Team Name:</label>
-      <input type="text" id="team" required>
-      <button type="submit">Generate QR</button>
-    </form>
-    <div id="error-msg" style="color:#d32f2f;font-weight:600;margin-bottom:10px;display:none;"></div>
-    <div id="qr-card">
-      <h3>Your QR Code</h3>
-      <div id="qrcode"></div>
-      <button id="download-btn">Download QR</button>
-      <div id="register-msg" style="margin-top:12px;font-size:1em;color:#388e3c;font-weight:500;"></div>
+    <div class="header">
+      <i class="fa-solid fa-qrcode"></i>
+      <h2>Generate Student QR Code</h2>
     </div>
-    <a href="index.html">&#8592; Back to Home</a>
+    
+    <div class="content">
+      <form id="student-form">
+        <div>
+          <label for="id">Student ID:</label>
+          <input type="text" id="id" required placeholder="Enter student ID">
+        </div>
+        
+        <div>
+          <label for="name">Student Name:</label>
+          <input type="text" id="name" required placeholder="Enter student name">
+        </div>
+        
+        <div>
+          <label for="class">Class:</label>
+          <input type="text" id="class" required placeholder="Enter class name">
+        </div>
+        
+        <div>
+          <label for="team">Team Name:</label>
+          <input type="text" id="team" required placeholder="Enter team name">
+        </div>
+        
+        <button type="submit">
+          <i class="fa-solid fa-qrcode"></i> Generate QR Code
+        </button>
+      </form>
+      
+      <div id="error-msg" class="error-msg"></div>
+      <div id="success-msg" class="success-msg"></div>
+      
+      <div id="qr-card">
+        <h3>Generated QR Code</h3>
+        <div id="qrcode"></div>
+        <button id="download-btn">
+          <i class="fa-solid fa-download"></i> Download QR Code
+        </button>
+        <div id="register-msg" class="success-msg"></div>
+      </div>
+      
+      <a href="index.html">
+        <i class="fa-solid fa-arrow-left"></i> Back to Home
+      </a>
+    </div>
   </div>
+
   <script>
     document.getElementById('student-form').onsubmit = function(e) {
       e.preventDefault();
+      
       const student = {
         id: document.getElementById('id').value.trim(),
         name: document.getElementById('name').value.trim(),
         class: document.getElementById('class').value.trim(),
         team: document.getElementById('team').value.trim()
       };
+      
       const errorMsg = document.getElementById('error-msg');
+      const successMsg = document.getElementById('success-msg');
+      const registerMsg = document.getElementById('register-msg');
+      
+      // Hide previous messages
       errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+      registerMsg.style.display = 'none';
+      
       // Stricter input validation
       if (!student.id || !student.name || !student.class || !student.team) {
-        errorMsg.textContent = 'All fields are required!';
+        errorMsg.textContent = 'All fields are required! Please fill in all the information.';
         errorMsg.style.display = 'block';
         document.getElementById('qr-card').style.display = 'none';
         return;
       }
+      
       // Register student in backend first
-      const registerMsg = document.getElementById('register-msg');
-      registerMsg.textContent = '';
-      registerMsg.style.color = '#388e3c';
-      fetch('http://192.168.18.2:3000/register-student', {
+      fetch('http://localhost:3000/register-student', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(student)
@@ -176,45 +377,53 @@
       .then(res => res.json())
       .then(data => {
         if (data.status === 'success') {
-          registerMsg.textContent = 'Student registered in master list!';
-          registerMsg.style.color = '#388e3c';
+          registerMsg.textContent = '✅ Student registered successfully in master list!';
+          registerMsg.style.display = 'block';
+          
           // Show the card and generate QR
-          document.getElementById('qr-card').style.display = 'inline-block';
+          document.getElementById('qr-card').style.display = 'block';
           document.getElementById('qrcode').innerHTML = '';
+          
           new QRCode(document.getElementById('qrcode'), {
             text: JSON.stringify(student),
-            width: 320,
-            height: 320
+            width: 280,
+            height: 280,
+            colorDark: '#d63031',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.H
           });
+          
           setTimeout(() => {
-            document.getElementById('download-btn').style.display = 'inline-block';
+            document.getElementById('download-btn').style.display = 'block';
           }, 500);
+          
         } else if (data.status === 'duplicate') {
-          errorMsg.textContent = 'Student already exists in master list.';
+          errorMsg.textContent = '❌ Student already exists in master list. Please use a different ID.';
           errorMsg.style.display = 'block';
           document.getElementById('qr-card').style.display = 'none';
         } else {
-          errorMsg.textContent = 'Unknown error during registration.';
+          errorMsg.textContent = '❌ Unknown error during registration. Please try again.';
           errorMsg.style.display = 'block';
           document.getElementById('qr-card').style.display = 'none';
         }
       })
       .catch(() => {
-        errorMsg.textContent = 'Could not connect to backend to register student.';
+        errorMsg.textContent = '❌ Could not connect to backend to register student. Please check your connection.';
         errorMsg.style.display = 'block';
         document.getElementById('qr-card').style.display = 'none';
       });
     };
+    
     // Download QR as image
     document.getElementById('download-btn').onclick = function() {
       const qrImg = document.querySelector('#qrcode img');
       if (qrImg) {
-        // Read student name and id from the form (or cache)
         const name = document.getElementById('name').value.trim().replace(/\s+/g, '_') || 'student';
         const id = document.getElementById('id').value.trim();
         let filename = name;
         if (id) filename += '_' + id;
         filename += '_qr.png';
+        
         const link = document.createElement('a');
         link.href = qrImg.src;
         link.download = filename;

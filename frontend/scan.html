@@ -9,105 +9,305 @@
   <script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
 
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #eaf1fb 0%, #f4f8fb 100%);
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
-    }
-    .container {
-      max-width: 420px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(42,93,159,0.10);
-      padding: 0 0 32px 0;
-      text-align: center;
-      min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 95%;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(220, 53, 69, 0.2);
+      overflow: hidden;
       position: relative;
     }
+
     .header {
       width: 100%;
-      background: linear-gradient(90deg, #2a5d9f 60%, #4e8cff 100%);
-      border-radius: 20px 20px 0 0;
-      padding: 32px 0 18px 0;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
+      padding: 40px 20px 30px 20px;
       color: #fff;
-      box-shadow: 0 2px 12px rgba(42,93,159,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      text-align: center;
+      position: relative;
     }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+
     .header i {
-      font-size: 2.2em;
-      margin-bottom: 8px;
+      font-size: 3.5em;
+      margin-bottom: 15px;
       color: #fff;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      animation: pulse 2s infinite;
     }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
     .header h2 {
       margin: 0;
-      font-size: 1.5em;
+      font-size: 2em;
       font-weight: 700;
       letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
     }
+
+    .content {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
     #reader {
-      margin: 28px auto 0 auto;
-      background: #eaf1fb;
-      padding: 0;
-      border-radius: 16px;
+      margin: 0 auto 30px auto;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      padding: 25px;
+      border-radius: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 340px;
-      height: 340px;
-      max-width: 90vw;
-      max-height: 90vw;
-      min-width: 220px;
-      min-height: 220px;
-      box-shadow: 0 4px 24px rgba(42,93,159,0.10);
+      width: 100%;
+      max-width: 400px;
+      min-height: 320px;
+      box-shadow: 0 15px 40px rgba(220, 53, 69, 0.15);
       position: relative;
+      border: 2px solid #ffe8e8;
     }
+
+    #reader::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52, #d63031);
+      border-radius: 20px;
+      z-index: -1;
+      opacity: 0.3;
+    }
+
     pre#result {
-      background: #f7fafd;
-      color: #2a5d9f;
-      border-radius: 12px;
-      padding: 16px;
-      font-size: 1.08em;
-      margin: 24px auto 0 auto;
-      min-height: 36px;
-      max-width: 340px;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      color: #d63031;
+      border-radius: 20px;
+      padding: 25px;
+      font-size: 1.2em;
+      margin: 25px auto;
+      min-height: 80px;
+      max-width: 400px;
       word-break: break-all;
       text-align: left;
-      box-shadow: 0 2px 8px rgba(42,93,159,0.06);
+      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.15);
       font-family: 'Roboto Mono', monospace;
       letter-spacing: 0.2px;
-    }
-    .back-link {
-      color: #2a5d9f;
-      text-decoration: none;
       font-weight: 600;
-      display: inline-block;
-      margin-top: 28px;
-      font-size: 1.1em;
-      transition: color 0.2s;
+      border: 2px solid #ffe8e8;
     }
-    .back-link:hover { color: #17406a; text-decoration: underline; }
-    @media (max-width: 700px) {
-      .container { max-width: 100vw; border-radius: 0; }
-      .header { border-radius: 0; padding: 24px 0 12px 0; }
-      .header h2 { font-size: 1.1em; }
-      #reader {
-        width: 90vw;
-        height: 90vw;
-        min-width: 180px;
-        min-height: 180px;
-        max-width: 98vw;
-        max-height: 98vw;
+
+    .back-link {
+      color: #d63031;
+      text-decoration: none;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 35px;
+      font-size: 1.2em;
+      padding: 18px 35px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+      transition: all 0.3s ease;
+      border: 2px solid #ffe8e8;
+    }
+
+    .back-link:hover {
+      color: #b71540;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.25);
+    }
+
+    /* Modal Styles */
+    .modal-message {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-message.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      border-radius: 20px;
+      padding: 35px;
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+      position: relative;
+      animation: slideIn 0.4s ease;
+    }
+
+    .modal-content.success {
+      border-left: 6px solid #27ae60;
+    }
+
+    .modal-content.error {
+      border-left: 6px solid #e74c3c;
+    }
+
+    .modal-content.info {
+      border-left: 6px solid #3498db;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 20px;
+      font-size: 1.8em;
+      font-weight: 700;
+    }
+
+    .modal-content.success h3 {
+      color: #27ae60;
+    }
+
+    .modal-content.error h3 {
+      color: #e74c3c;
+    }
+
+    .modal-content.info h3 {
+      color: #3498db;
+    }
+
+    .modal-content p {
+      margin-bottom: 30px;
+      line-height: 1.8;
+      color: #555;
+      font-size: 1.1em;
+    }
+
+    .modal-close {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 35px;
+      font-size: 1.1em;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+    }
+
+    .modal-close:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-60px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Loading Animation */
+    .loading {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #d63031;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .container {
+        width: 100%;
+        border-radius: 0;
+        min-height: 100vh;
       }
-      pre#result { font-size: 0.98em; }
+
+      .header {
+        border-radius: 0;
+        padding: 30px 15px 20px 15px;
+      }
+
+      .header h2 {
+        font-size: 1.6em;
+      }
+
+      .content {
+        padding: 30px 15px;
+      }
+
+      #reader {
+        min-height: 280px;
+        padding: 20px;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 30px 25px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .header h2 {
+        font-size: 1.4em;
+      }
+
+      .header i {
+        font-size: 3em;
+      }
+
+      #reader {
+        min-height: 250px;
+      }
     }
   </style>
 </head>
@@ -117,16 +317,33 @@
       <i class="fa-solid fa-qrcode"></i>
       <h2>Scan QR Code & Record Attendance</h2>
     </div>
-    <div id="reader"></div>
-    <pre id="result"></pre>
-    <a class="back-link" href="index.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    
+    <div class="content">
+      <div id="reader"></div>
+      <pre id="result" style="display:none"></pre>
+      
+      <!-- Modal message popup -->
+      <div id="modal-message" class="modal-message">
+        <div class="modal-content info">
+          <h3>Info</h3>
+          <p></p>
+          <button id="modal-close-btn" class="modal-close">Close</button>
+        </div>
+      </div>
+      
+      <a class="back-link" href="index.html">
+        <i class="fa-solid fa-arrow-left"></i> 
+        Back to Home
+      </a>
+    </div>
   </div>
+
   <script>
     let attendedIds = JSON.parse(sessionStorage.getItem('attendedIds') || '[]');
 
     // Secure context check
     if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-      document.getElementById('result').innerHTML = `<span style='color:#d32f2f;font-weight:600;'>Camera access is only supported in secure contexts (HTTPS or localhost). Please use https:// or http://localhost to access this page.</span>`;
+      showModalMessage('error', 'Camera Error', 'Camera access is only supported in secure contexts (HTTPS or localhost). Please use https:// or http://localhost to access this page.');
       console.error('Camera access blocked: not a secure context.');
     } else {
       function onScanSuccess(decodedText) {
@@ -138,22 +355,27 @@
         try {
           student = JSON.parse(qrData);
         } catch (err) {
-          document.getElementById('result').textContent = 'Invalid QR code data!';
+          showModalMessage('error', 'Invalid QR Code', 'The scanned QR code contains invalid data. Please try scanning a valid student QR code.');
           return;
         }
+        
         // Check for required fields
         if (!student.id || !student.name || !student.class) {
-          document.getElementById('result').textContent = 'QR code is missing required fields!';
+          showModalMessage('error', 'Invalid QR Code', 'The QR code is missing required student information. Please use a valid student QR code.');
           return;
         }
-        let displayText = `ID: ${student.id}\nName: ${student.name}\nClass: ${student.class}`;
+        
+        let displayText = `Student Information:\n\nID: ${student.id}\nName: ${student.name}\nClass: ${student.class}`;
         if (student.team) displayText += `\nTeam: ${student.team}`;
+        
         if (attendedIds.includes(student.id)) {
-          document.getElementById('result').textContent = 'Attendance already recorded for this student in this session!';
+          showModalMessage('info', 'Already Recorded', 'Attendance has already been recorded for this student in this session. Please scan a different student\'s QR code.');
           return;
         }
-        document.getElementById('result').textContent = 'Processing...';
-        fetch('http://192.168.18.2:3000/attendance', {
+        
+        showModalMessage('info', 'Processing', 'Recording attendance... Please wait.');
+        
+        fetch('http://localhost:3000/attendance', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(student)
@@ -163,15 +385,19 @@
           if (data.status === 'success') {
             attendedIds.push(student.id);
             sessionStorage.setItem('attendedIds', JSON.stringify(attendedIds));
-            document.getElementById('result').textContent = displayText + '\nAttendance recorded!';
+            showModalMessage('success', 'Attendance Recorded Successfully!', 
+              `${displayText}\n\n✅ Attendance has been recorded successfully!`);
           } else if (data.status === 'duplicate') {
-            document.getElementById('result').textContent = displayText + '\nAttendance already recorded for today!';
+            showModalMessage('info', 'Already Recorded Today', 
+              `${displayText}\n\nℹ️ Attendance has already been recorded for this student today.`);
           } else {
-            document.getElementById('result').textContent = displayText + '\nUnknown error.';
+            showModalMessage('error', 'Recording Failed', 
+              `${displayText}\n\n❌ Failed to record attendance. Please try again.`);
           }
         })
         .catch(() => {
-          document.getElementById('result').textContent = displayText + '\nFailed to connect to backend!';
+          showModalMessage('error', 'Connection Error', 
+            `${displayText}\n\n❌ Failed to connect to the server. Please check your internet connection and try again.`);
         });
       }
 
@@ -189,6 +415,7 @@
           },
           false
         );
+        
         scanner.render(
           onScanSuccess,
           function onScanError(errorMessage) {
@@ -205,17 +432,18 @@
               } else if (errorMessage && (errorMessage.toLowerCase().includes('notfounderror') || errorMessage.toLowerCase().includes('no camera'))) {
                 msg = 'No camera was found on this device.';
               }
-              document.getElementById('result').innerHTML = `<span style='color:#d32f2f;font-weight:600;'>${msg}</span>`;
+              document.getElementById('result').innerHTML = `<span style='color:#e74c3c;font-weight:700;'>${msg}</span>`;
               console.error('Camera error:', errorMessage);
             }
           }
         );
         console.log('Html5QrcodeScanner initialized.');
       } else {
-        document.getElementById('result').innerHTML = `<span style='color:#d32f2f;font-weight:600;'>Camera library failed to load. Please refresh the page or try a different browser.</span>`;
+        document.getElementById('result').innerHTML = `<span style='color:#e74c3c;font-weight:700;'>Camera library failed to load. Please refresh the page or try a different browser.</span>`;
         console.error('Camera library failed to load.');
       }
     }
-</script>
+  </script>
+  <script src="scan-modal.js"></script>
 </body>
 </html>

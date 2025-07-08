@@ -2,6 +2,12 @@ import express from 'express';
 import fs from 'fs';
 import XLSX from 'xlsx';
 import cors from 'cors';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const app = express();
 const PORT = 3000;
@@ -29,14 +35,15 @@ app.post('/attendance', (req, res) => {
     return res.json({ status: 'duplicate' });
   }
 
-  // Add timestamp
-  student.timestamp = new Date().toISOString();
+  // Add Nepali (Asia/Kathmandu) timestamp
+  student.timestamp = dayjs().tz('Asia/Kathmandu').format('YYYY-MM-DD HH:mm:ss');
   data.push({
     id: student.id,
     name: student.name,
     class: student.class,
     team: student.team || '',
-    timestamp: student.timestamp
+    timestamp: student.timestamp,
+    Status: 'Present'
   });
 
   // Write back to Excel
@@ -75,6 +82,62 @@ app.post('/register-student', (req, res) => {
   XLSX.writeFile(workbook, STUDENT_FILE);
 
   res.json({ status: 'success' });
+});
+
+app.post('/mark-absent', (req, res) => {
+  const STUDENT_FILE = 'students.xlsx';
+  let students = [];
+  if (fs.existsSync(STUDENT_FILE)) {
+    const workbook = XLSX.readFile(STUDENT_FILE);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    students = XLSX.utils.sheet_to_json(worksheet);
+  } else {
+    return res.status(404).json({ status: 'no_students' });
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  let attendance = [];
+  if (fs.existsSync(EXCEL_FILE)) {
+    const workbook = XLSX.readFile(EXCEL_FILE);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    attendance = XLSX.utils.sheet_to_json(worksheet);
+  }
+
+  // Find students who are absent today
+  const absentees = students.filter(stu =>
+    !attendance.some(a => a.id === stu.id && a.timestamp && a.timestamp.slice(0, 10) === today && a.Status === 'Present')
+  );
+
+  // Add absent records
+  absentees.forEach(stu => {
+    attendance.push({
+      id: stu.id,
+      name: stu.name,
+      class: stu.class,
+      team: stu.team || '',
+      timestamp: new Date().toISOString(),
+      Status: 'Absent'
+    });
+  });
+
+  // Write back to Excel
+  const newSheet = XLSX.utils.json_to_sheet(attendance);
+  let workbook = XLSX.utils.book_new();
+  workbook.SheetNames[0] = 'Attendance';
+  workbook.Sheets['Attendance'] = newSheet;
+  XLSX.writeFile(workbook, EXCEL_FILE);
+
+  res.json({ status: 'absentees_marked', count: absentees.length });
+});
+
+// Endpoint to download the attendance.xlsx file
+app.get('/download-attendance', (req, res) => {
+  const file = __dirname + '/attendance.xlsx';
+  res.download(file, 'attendance.xlsx', (err) => {
+    if (err) {
+      res.status(404).send('Attendance file not found.');
+    }
+  });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
