@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Scan QR & Record Attendance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <title>Scan QR & Record Attendance</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <script src="https://unpkg.com/html5-qrcode/html5-qrcode.min.js"></script>
 
@@ -17,7 +17,7 @@
 
     body {
       font-family: 'Roboto', sans-serif;
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       margin: 0;
       padding: 0;
       min-height: 100vh;
@@ -27,137 +27,223 @@
     }
 
     .container {
-      max-width: 500px;
+      max-width: 550px;
       width: 95%;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(220, 53, 69, 0.2);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      padding: 0;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: slideUp 0.8s ease-out;
       overflow: hidden;
-      position: relative;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .header {
       width: 100%;
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
-      padding: 40px 20px 30px 20px;
-      color: #fff;
-      text-align: center;
-      position: relative;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 40px 30px 30px 30px;
+      color: white;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
     }
 
-    .header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-      opacity: 0.3;
+    .header-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
     }
 
-    .header i {
-      font-size: 3.5em;
-      margin-bottom: 15px;
-      color: #fff;
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    .header-icon i {
+      font-size: 2.5em;
+      color: white;
     }
 
     .header h2 {
       margin: 0;
-      font-size: 2em;
+      font-size: 1.8em;
       font-weight: 700;
       letter-spacing: 0.5px;
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+      margin: 8px 0 0 0;
+      opacity: 0.9;
+      font-size: 1em;
     }
 
     .content {
-      padding: 40px 20px;
-      text-align: center;
+      padding: 40px 30px;
     }
 
     #reader {
       margin: 0 auto 30px auto;
-      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-      padding: 25px;
+      background: linear-gradient(135deg, #f7fafc, #edf2f7);
+      padding: 20px;
       border-radius: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
       max-width: 400px;
-      min-height: 320px;
-      box-shadow: 0 15px 40px rgba(220, 53, 69, 0.15);
+      min-height: 300px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
+      border: 1px solid rgba(102, 126, 234, 0.1);
       position: relative;
-      border: 2px solid #ffe8e8;
     }
 
     #reader::before {
       content: '';
       position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      background: linear-gradient(45deg, #ff6b6b, #ee5a52, #d63031);
-      border-radius: 20px;
-      z-index: -1;
-      opacity: 0.3;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      border: 2px dashed rgba(102, 126, 234, 0.3);
+      border-radius: 12px;
+      pointer-events: none;
+      animation: pulse 2s infinite;
     }
 
-    pre#result {
-      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-      color: #d63031;
-      border-radius: 20px;
-      padding: 25px;
-      font-size: 1.2em;
-      margin: 25px auto;
-      min-height: 80px;
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    #reader video {
+      border-radius: 12px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .scan-status {
+      background: linear-gradient(135deg, #f7fafc, #edf2f7);
+      color: #2d3748;
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 1.1em;
+      margin: 20px auto;
       max-width: 400px;
-      word-break: break-all;
-      text-align: left;
-      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.15);
-      font-family: 'Roboto Mono', monospace;
-      letter-spacing: 0.2px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      display: none;
+      animation: fadeInUp 0.6s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .scan-status.success {
+      background: linear-gradient(135deg, #f0fff4, #e6fffa);
+      border-color: #48bb78;
+      color: #22543d;
+    }
+
+    .scan-status.error {
+      background: linear-gradient(135deg, #fff5f5, #fed7d7);
+      border-color: #f56565;
+      color: #742a2a;
+    }
+
+    .scan-status.info {
+      background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+      border-color: #4299e1;
+      color: #2a4365;
+    }
+
+    .scan-status i {
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .control-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 1em;
       font-weight: 600;
-      border: 2px solid #ffe8e8;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    }
+
+    .control-btn.secondary {
+      background: linear-gradient(135deg, #a0aec0, #718096);
+    }
+
+    .control-btn.secondary:hover {
+      box-shadow: 0 8px 24px rgba(160, 174, 192, 0.4);
     }
 
     .back-link {
-      color: #d63031;
+      color: #667eea;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 35px;
-      font-size: 1.2em;
-      padding: 18px 35px;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
-      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.15);
+      margin-top: 24px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: rgba(102, 126, 234, 0.1);
       transition: all 0.3s ease;
-      border: 2px solid #ffe8e8;
+    }
+
+    .back-link i {
+      margin-right: 8px;
     }
 
     .back-link:hover {
-      color: #b71540;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.25);
+      background: rgba(102, 126, 234, 0.2);
+      transform: translateY(-2px);
     }
 
     /* Modal Styles */
-    .modal-message {
+    .modal {
       display: none;
       position: fixed;
       z-index: 1000;
@@ -165,148 +251,127 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px);
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease;
     }
 
-    .modal-message.active {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-content {
-      background: #fff;
+      background: white;
+      margin: 15% auto;
+      padding: 32px;
       border-radius: 20px;
-      padding: 35px;
-      max-width: 450px;
       width: 90%;
+      max-width: 400px;
       text-align: center;
-      box-shadow: 0 25px 70px rgba(0,0,0,0.4);
-      position: relative;
-      animation: slideIn 0.4s ease;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      animation: slideDown 0.3s ease;
     }
 
-    .modal-content.success {
-      border-left: 6px solid #27ae60;
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .modal-content.error {
-      border-left: 6px solid #e74c3c;
-    }
-
-    .modal-content.info {
-      border-left: 6px solid #3498db;
-    }
-
-    .modal-content h3 {
-      margin-bottom: 20px;
+    .modal-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
       font-size: 1.8em;
-      font-weight: 700;
     }
 
-    .modal-content.success h3 {
-      color: #27ae60;
+    .modal-icon.success {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
     }
 
-    .modal-content.error h3 {
-      color: #e74c3c;
+    .modal-icon.error {
+      background: linear-gradient(135deg, #f56565, #e53e3e);
+      color: white;
     }
 
-    .modal-content.info h3 {
-      color: #3498db;
+    .modal-icon.info {
+      background: linear-gradient(135deg, #4299e1, #3182ce);
+      color: white;
     }
 
-    .modal-content p {
-      margin-bottom: 30px;
-      line-height: 1.8;
-      color: #555;
-      font-size: 1.1em;
+    .modal h3 {
+      color: #2d3748;
+      margin-bottom: 12px;
+      font-size: 1.4em;
+      font-weight: 600;
     }
 
-    .modal-close {
-      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #d63031 100%);
-      color: #fff;
+    .modal p {
+      color: #718096;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
       border: none;
+      padding: 12px 32px;
       border-radius: 12px;
-      padding: 15px 35px;
-      font-size: 1.1em;
-      font-weight: 700;
+      font-size: 1em;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
     }
 
-    .modal-close:hover {
+    .modal-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 35px rgba(220, 53, 69, 0.4);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
     }
 
-    @keyframes slideIn {
-      from { transform: translateY(-60px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Loading Animation */
-    .loading {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #d63031;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-right: 12px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Responsive Design */
     @media (max-width: 600px) {
       .container {
-        width: 100%;
-        border-radius: 0;
-        min-height: 100vh;
+        width: 98%;
+        border-radius: 16px;
       }
-
+      
       .header {
-        border-radius: 0;
-        padding: 30px 15px 20px 15px;
+        padding: 30px 20px 20px 20px;
       }
-
+      
       .header h2 {
-        font-size: 1.6em;
+        font-size: 1.5em;
       }
-
+      
       .content {
-        padding: 30px 15px;
+        padding: 30px 20px;
       }
-
-      #reader {
-        min-height: 280px;
-        padding: 20px;
-      }
-
-      .modal-content {
-        width: 95%;
-        padding: 30px 25px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .header h2 {
-        font-size: 1.4em;
-      }
-
-      .header i {
-        font-size: 3em;
-      }
-
+      
       #reader {
         min-height: 250px;
+        padding: 16px;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .control-btn {
+        width: 100%;
+        max-width: 200px;
+        justify-content: center;
       }
     }
   </style>
@@ -314,136 +379,204 @@
 <body>
   <div class="container">
     <div class="header">
-      <i class="fa-solid fa-qrcode"></i>
-      <h2>Scan QR Code & Record Attendance</h2>
+      <div class="header-icon">
+        <i class="fas fa-camera"></i>
+      </div>
+      <h2>Scan QR Code</h2>
+      <p>Point your camera at a student's QR code to record attendance</p>
     </div>
-    
+
     <div class="content">
       <div id="reader"></div>
-      <pre id="result" style="display:none"></pre>
       
-      <!-- Modal message popup -->
-      <div id="modal-message" class="modal-message">
-        <div class="modal-content info">
-          <h3>Info</h3>
-          <p></p>
-          <button id="modal-close-btn" class="modal-close">Close</button>
-        </div>
+      <div id="scanStatus" class="scan-status">
+        <i class="fas fa-info-circle"></i>
+        <span id="statusMessage">Ready to scan</span>
       </div>
-      
-      <a class="back-link" href="index.html">
-        <i class="fa-solid fa-arrow-left"></i> 
-        Back to Home
+
+      <div class="controls">
+        <button class="control-btn" onclick="startScanning()">
+          <i class="fas fa-play"></i> Start Scanning
+        </button>
+        <button class="control-btn secondary" onclick="stopScanning()">
+          <i class="fas fa-stop"></i> Stop Scanning
+        </button>
+        <button class="control-btn secondary" onclick="showInfoModal('Scan QR codes to record student attendance. Make sure the QR code is clearly visible in the camera view.')">
+          <i class="fas fa-question-circle"></i> Help
+        </button>
+      </div>
+
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Home
       </a>
     </div>
   </div>
 
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-icon info" id="modalIcon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <h3 id="modalTitle">Information</h3>
+      <p id="modalMessage">This is an information message.</p>
+      <button class="modal-btn" onclick="closeModal()">Got it!</button>
+    </div>
+  </div>
+
   <script>
-    let attendedIds = JSON.parse(sessionStorage.getItem('attendedIds') || '[]');
+    let html5QrcodeScanner = null;
+    let isScanning = false;
 
-    // Secure context check
-    if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-      showModalMessage('error', 'Camera Error', 'Camera access is only supported in secure contexts (HTTPS or localhost). Please use https:// or http://localhost to access this page.');
-      console.error('Camera access blocked: not a secure context.');
-    } else {
-      function onScanSuccess(decodedText) {
-        submitAttendance(decodedText);
+    // Modal functions
+    function showModal(title, message, type = 'info') {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalMessage').textContent = message;
+      
+      const icon = document.getElementById('modalIcon');
+      icon.className = `modal-icon ${type}`;
+      
+      const iconElement = icon.querySelector('i');
+      if (type === 'success') {
+        iconElement.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        iconElement.className = 'fas fa-exclamation-circle';
+      } else {
+        iconElement.className = 'fas fa-info-circle';
+      }
+      
+      document.getElementById('modal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    function showStatus(message, type = 'info') {
+      const statusDiv = document.getElementById('scanStatus');
+      const statusMessage = document.getElementById('statusMessage');
+      
+      statusDiv.className = `scan-status ${type}`;
+      statusMessage.textContent = message;
+      statusDiv.style.display = 'block';
+      
+      const icon = statusDiv.querySelector('i');
+      if (type === 'success') {
+        icon.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        icon.className = 'fas fa-exclamation-circle';
+      } else {
+        icon.className = 'fas fa-info-circle';
+      }
+    }
+
+    function startScanning() {
+      if (isScanning) {
+        showModal('Info', 'Scanner is already running.', 'info');
+        return;
       }
 
-      function submitAttendance(qrData) {
-        let student;
-        try {
-          student = JSON.parse(qrData);
-        } catch (err) {
-          showModalMessage('error', 'Invalid QR Code', 'The scanned QR code contains invalid data. Please try scanning a valid student QR code.');
-          return;
-        }
-        
-        // Check for required fields
-        if (!student.id || !student.name || !student.class) {
-          showModalMessage('error', 'Invalid QR Code', 'The QR code is missing required student information. Please use a valid student QR code.');
-          return;
-        }
-        
-        let displayText = `Student Information:\n\nID: ${student.id}\nName: ${student.name}\nClass: ${student.class}`;
-        if (student.team) displayText += `\nTeam: ${student.team}`;
-        
-        if (attendedIds.includes(student.id)) {
-          showModalMessage('info', 'Already Recorded', 'Attendance has already been recorded for this student in this session. Please scan a different student\'s QR code.');
-          return;
-        }
-        
-        showModalMessage('info', 'Processing', 'Recording attendance... Please wait.');
-        
-        fetch('http://localhost:3000/attendance', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(student)
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'success') {
-            attendedIds.push(student.id);
-            sessionStorage.setItem('attendedIds', JSON.stringify(attendedIds));
-            showModalMessage('success', 'Attendance Recorded Successfully!', 
-              `${displayText}\n\n✅ Attendance has been recorded successfully!`);
-          } else if (data.status === 'duplicate') {
-            showModalMessage('info', 'Already Recorded Today', 
-              `${displayText}\n\nℹ️ Attendance has already been recorded for this student today.`);
-          } else {
-            showModalMessage('error', 'Recording Failed', 
-              `${displayText}\n\n❌ Failed to record attendance. Please try again.`);
-          }
-        })
-        .catch(() => {
-          showModalMessage('error', 'Connection Error', 
-            `${displayText}\n\n❌ Failed to connect to the server. Please check your internet connection and try again.`);
-        });
-      }
-
-      // Camera initialization
-      if (window.Html5QrcodeScanner) {
-        const scanner = new Html5QrcodeScanner(
+      try {
+        html5QrcodeScanner = new Html5QrcodeScanner(
           "reader",
-          {
-            fps: 15,
-            qrbox: { width: 260, height: 260 },
-            aspectRatio: 1,
-            rememberLastUsedCamera: true,
-            showTorchButtonIfSupported: true,
-            supportedScanTypes: [window.Html5QrcodeScanType ? Html5QrcodeScanType.SCAN_TYPE_CAMERA : 2]
+          { 
+            fps: 10, 
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
           },
           false
         );
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        isScanning = true;
+        showStatus('Scanner started. Point camera at QR code.', 'info');
         
-        scanner.render(
-          onScanSuccess,
-          function onScanError(errorMessage) {
-            // Only display error if no camera or permission denied
-            if (errorMessage &&
-              (errorMessage.toLowerCase().includes('notallowederror') ||
-               errorMessage.toLowerCase().includes('permission') ||
-               errorMessage.toLowerCase().includes('notfounderror') ||
-               errorMessage.toLowerCase().includes('no camera'))
-            ) {
-              let msg = 'Camera error: ' + errorMessage;
-              if (errorMessage && (errorMessage.toLowerCase().includes('notallowederror') || errorMessage.toLowerCase().includes('permission'))) {
-                msg = 'Camera access was denied. Please allow camera permissions in your browser settings and reload the page.';
-              } else if (errorMessage && (errorMessage.toLowerCase().includes('notfounderror') || errorMessage.toLowerCase().includes('no camera'))) {
-                msg = 'No camera was found on this device.';
-              }
-              document.getElementById('result').innerHTML = `<span style='color:#e74c3c;font-weight:700;'>${msg}</span>`;
-              console.error('Camera error:', errorMessage);
-            }
-          }
-        );
-        console.log('Html5QrcodeScanner initialized.');
+        showModal('Success', 'QR scanner started successfully! Point your camera at a student\'s QR code.', 'success');
+      } catch (error) {
+        showModal('Error', 'Failed to start scanner. Please check camera permissions.', 'error');
+        console.error('Scanner error:', error);
+      }
+    }
+
+    function stopScanning() {
+      if (html5QrcodeScanner && isScanning) {
+        html5QrcodeScanner.clear();
+        isScanning = false;
+        showStatus('Scanner stopped.', 'info');
+        showModal('Info', 'QR scanner stopped.', 'info');
       } else {
-        document.getElementById('result').innerHTML = `<span style='color:#e74c3c;font-weight:700;'>Camera library failed to load. Please refresh the page or try a different browser.</span>`;
-        console.error('Camera library failed to load.');
+        showModal('Info', 'Scanner is not running.', 'info');
+      }
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      try {
+        const studentData = JSON.parse(decodedText);
+        
+        // Send attendance data to backend
+        fetch('http://localhost:3000/attendance', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(studentData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            showStatus(`Attendance recorded for ${studentData.name} (${studentData.id})`, 'success');
+            showModal('Success', `Attendance successfully recorded for ${studentData.name}!`, 'success');
+          } else if (data.status === 'duplicate') {
+            showStatus(`Attendance already recorded for ${studentData.name} today`, 'error');
+            showModal('Info', `Attendance already recorded for ${studentData.name} today.`, 'info');
+          } else {
+            showStatus('Failed to record attendance', 'error');
+            showModal('Error', 'Failed to record attendance. Please try again.', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showStatus('Network error. Please try again.', 'error');
+          showModal('Error', 'Network error. Please check your connection and try again.', 'error');
+        });
+
+        // Stop scanning after successful scan
+        setTimeout(() => {
+          stopScanning();
+        }, 2000);
+
+      } catch (error) {
+        showStatus('Invalid QR code format', 'error');
+        showModal('Error', 'Invalid QR code format. Please use a valid student QR code.', 'error');
+      }
+    }
+
+    function onScanFailure(error) {
+      // Handle scan failure silently
+      console.warn(`QR scan failed: ${error}`);
+    }
+
+    // Welcome message
+    window.onload = function() {
+      setTimeout(() => {
+        showModal('Welcome', 'Click "Start Scanning" to begin recording attendance. Point your camera at a student\'s QR code.', 'info');
+      }, 500);
+    }
+
+    // Cleanup on page unload
+    window.onbeforeunload = function() {
+      if (html5QrcodeScanner && isScanning) {
+        html5QrcodeScanner.clear();
       }
     }
   </script>
-  <script src="scan-modal.js"></script>
 </body>
 </html>

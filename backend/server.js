@@ -140,6 +140,29 @@ app.get('/download-attendance', (req, res) => {
   });
 });
 
+// Endpoint to get attendance stats
+app.get('/stats', (req, res) => {
+  const STUDENT_FILE = 'students.xlsx';
+  let students = [];
+  if (fs.existsSync(STUDENT_FILE)) {
+    const workbook = XLSX.readFile(STUDENT_FILE);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    students = XLSX.utils.sheet_to_json(worksheet);
+  }
+  const totalStudents = students.length;
+
+  let presentToday = 0;
+  const today = new Date().toISOString().slice(0, 10);
+  if (fs.existsSync(EXCEL_FILE)) {
+    const workbook = XLSX.readFile(EXCEL_FILE);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const attendance = XLSX.utils.sheet_to_json(worksheet);
+    presentToday = attendance.filter(a => a.timestamp && a.timestamp.slice(0, 10) === today && a.Status === 'Present').length;
+  }
+  const attendanceRate = totalStudents > 0 ? Math.round((presentToday / totalStudents) * 100) : 0;
+  res.json({ totalStudents, presentToday, attendanceRate });
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 }); 
