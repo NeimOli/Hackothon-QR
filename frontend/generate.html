@@ -26,7 +26,7 @@
     }
 
     .container {
-      max-width: 500px;
+      max-width: 600px;
       width: 90%;
       background: rgba(255, 255, 255, 0.95);
       border-radius: 24px;
@@ -87,6 +87,40 @@
       margin-bottom: 32px;
     }
 
+    .tabs {
+      display: flex;
+      margin-bottom: 24px;
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #718096;
+      transition: all 0.3s ease;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
     form {
       margin-bottom: 24px;
       text-align: left;
@@ -117,7 +151,7 @@
       font-size: 1.1em;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="file"] {
       width: 100%;
       padding: 16px 16px 16px 48px;
       border: 2px solid #e2e8f0;
@@ -128,11 +162,51 @@
       box-sizing: border-box;
     }
 
-    input[type="text"]:focus {
+    input[type="text"]:focus, input[type="file"]:focus {
       outline: none;
       border-color: #667eea;
       background: white;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .file-upload-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-upload-wrapper input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-upload-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border: 2px dashed #cbd5e0;
+      border-radius: 12px;
+      background: #f7fafc;
+      color: #718096;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .file-upload-label:hover {
+      border-color: #667eea;
+      background: #edf2f7;
+    }
+
+    .file-upload-label i {
+      margin-right: 8px;
+      font-size: 1.2em;
     }
 
     .generate-btn {
@@ -218,6 +292,60 @@
     #download-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(72, 187, 120, 0.4);
+    }
+
+    .bulk-results {
+      margin-top: 24px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: #f7fafc;
+      border-radius: 12px;
+      padding: 16px;
+      display: none;
+    }
+
+    .student-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .student-info {
+      flex: 1;
+      text-align: left;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 4px;
+    }
+
+    .student-details {
+      font-size: 0.9em;
+      color: #718096;
+    }
+
+    .download-qr-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .download-qr-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
     .back-link {
@@ -370,50 +498,99 @@
       <p class="subtitle">Create QR codes for student attendance tracking</p>
     </div>
 
-    <form id="studentForm">
-      <div class="form-group">
-        <label for="studentId">Student ID</label>
-        <div class="input-wrapper">
-          <i class="fas fa-id-card"></i>
-          <input type="text" id="studentId" placeholder="Enter student ID" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="studentName">Student Name</label>
-        <div class="input-wrapper">
-          <i class="fas fa-user"></i>
-          <input type="text" id="studentName" placeholder="Enter student name" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="studentClass">Class</label>
-        <div class="input-wrapper">
-          <i class="fas fa-graduation-cap"></i>
-          <input type="text" id="studentClass" placeholder="Enter class" required>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="studentTeam">Team (Optional)</label>
-        <div class="input-wrapper">
-          <i class="fas fa-users"></i>
-          <input type="text" id="studentTeam" placeholder="Enter team name">
-        </div>
-      </div>
-
-      <button type="submit" class="generate-btn">
-        <i class="fas fa-qrcode"></i> Generate QR Code
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('single')">
+        <i class="fas fa-user"></i> Single Student
       </button>
-    </form>
-
-    <div id="qr-card">
-      <h3>Student QR Code Generated!</h3>
-      <div id="qrcode"></div>
-      <button id="download-btn" onclick="downloadQR()">
-        <i class="fas fa-download"></i> Download QR Code
+      <button class="tab" onclick="switchTab('bulk')">
+        <i class="fas fa-users"></i> Bulk from Excel
       </button>
+    </div>
+
+    <!-- Single Student Tab -->
+    <div id="single-tab" class="tab-content active">
+      <form id="studentForm">
+        <div class="form-group">
+          <label for="studentId">Student ID</label>
+          <div class="input-wrapper">
+            <i class="fas fa-id-card"></i>
+            <input type="text" id="studentId" placeholder="Enter student ID" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="studentName">Student Name</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" id="studentName" placeholder="Enter student name" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="studentClass">Class</label>
+          <div class="input-wrapper">
+            <i class="fas fa-graduation-cap"></i>
+            <input type="text" id="studentClass" placeholder="Enter class" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="studentTeam">Team (Optional)</label>
+          <div class="input-wrapper">
+            <i class="fas fa-users"></i>
+            <input type="text" id="studentTeam" placeholder="Enter team name">
+          </div>
+        </div>
+
+        <button type="submit" class="generate-btn">
+          <i class="fas fa-qrcode"></i> Generate QR Code
+        </button>
+      </form>
+
+      <div id="qr-card">
+        <h3>Student QR Code Generated!</h3>
+        <div id="qr-expiry-info" style="background: linear-gradient(135deg, #f0fff4, #e6fffa); padding: 12px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #48bb78;">
+          <i class="fas fa-clock" style="color: #48bb78; margin-right: 8px;"></i>
+          <span style="color: #22543d; font-weight: 600;">Valid for 3 days</span>
+          <br>
+          <small style="color: #38a169;">Expires on: <span id="expiry-date"></span></small>
+        </div>
+        <div id="qrcode"></div>
+        <button id="download-btn" onclick="downloadQR()">
+          <i class="fas fa-download"></i> Download QR Code
+        </button>
+      </div>
+    </div>
+
+    <!-- Bulk Excel Tab -->
+    <div id="bulk-tab" class="tab-content">
+      <form id="bulkForm">
+        <div class="form-group">
+          <label for="excelFile">Upload Excel File</label>
+          <div class="file-upload-wrapper">
+            <input type="file" id="excelFile" accept=".xlsx,.xls" required>
+            <label for="excelFile" class="file-upload-label">
+              <i class="fas fa-file-excel"></i>
+              Choose Excel file or drag here
+            </label>
+          </div>
+          <small style="color: #718096; margin-top: 8px; display: block;">
+            Excel should have columns: ID, Name, Class, Team (optional)
+          </small>
+        </div>
+
+        <button type="submit" class="generate-btn">
+          <i class="fas fa-qrcode"></i> Generate All QR Codes
+        </button>
+      </form>
+
+      <div id="bulk-results" class="bulk-results">
+        <h3>Generated QR Codes</h3>
+        <div id="students-list"></div>
+        <button id="download-all-btn" class="generate-btn" style="display: none; margin-top: 20px; background: linear-gradient(135deg, #48bb78, #38a169);" onclick="downloadAllQRCodes()">
+          <i class="fas fa-download"></i> Download All QR Codes
+        </button>
+      </div>
     </div>
 
     <a href="index.html" class="back-link">
@@ -435,6 +612,23 @@
 
   <script>
     let qrCode = null;
+    let generatedQRCodes = {};
+    let allGeneratedQRCodes = []; // Store all QR codes for bulk download
+
+    // Tab switching
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      if (tabName === 'single') {
+        document.getElementById('single-tab').classList.add('active');
+      } else {
+        document.getElementById('bulk-tab').classList.add('active');
+      }
+    }
 
     // Modal functions
     function showModal(title, message, type = 'info') {
@@ -468,7 +662,18 @@
       }
     }
 
-    // Form submission
+    // File upload handling
+    document.getElementById('excelFile').addEventListener('change', function(e) {
+      const fileName = e.target.files[0]?.name;
+      if (fileName) {
+        const label = document.querySelector('.file-upload-label');
+        label.innerHTML = `<i class="fas fa-file-excel"></i> ${fileName}`;
+        label.style.borderColor = '#48bb78';
+        label.style.background = '#f0fff4';
+      }
+    });
+
+    // Single student form submission
     document.getElementById('studentForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -513,16 +718,295 @@
       });
     });
 
+    // Bulk form submission
+    document.getElementById('bulkForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const file = document.getElementById('excelFile').files[0];
+      if (!file) {
+        showModal('Error', 'Please select an Excel file.', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          // Parse Excel file using SheetJS
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+          if (jsonData.length === 0) {
+            showModal('Error', 'No data found in the Excel file.', 'error');
+            return;
+          }
+
+          // Process each student
+          processBulkStudents(jsonData);
+        } catch (error) {
+          showModal('Error', 'Failed to read Excel file. Please check the format.', 'error');
+          console.error('Excel parsing error:', error);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+
+    function processBulkStudents(students) {
+      let processed = 0;
+      let successCount = 0;
+      const results = [];
+      allGeneratedQRCodes = []; // Reset the array for new bulk generation
+
+      students.forEach((student, index) => {
+        // Normalize column names
+        const studentData = {
+          id: student.ID || student.Id || student.id || student['Student ID'] || '',
+          name: student.Name || student.name || student['Full Name'] || student['Student Name'] || '',
+          class: student.Class || student.class || student['Class Name'] || '',
+          team: student.Team || student.team || student['Team Name'] || ''
+        };
+
+        if (!studentData.id || !studentData.name || !studentData.class) {
+          results.push({
+            ...studentData,
+            status: 'error',
+            message: 'Missing required fields'
+          });
+          processed++;
+          if (processed === students.length) {
+            displayBulkResults(results);
+          }
+          return;
+        }
+
+        // Register student in backend
+        fetch('http://localhost:3000/register-student', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(studentData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            // Generate QR code
+            const qrData = generateQRCodeData(studentData);
+            const result = {
+              ...studentData,
+              status: 'success',
+              qrData: qrData
+            };
+            results.push(result);
+            allGeneratedQRCodes.push(result); // Add to global array
+            successCount++;
+          } else {
+            results.push({
+              ...studentData,
+              status: 'error',
+              message: data.status === 'duplicate' ? 'Student already exists' : 'Registration failed'
+            });
+          }
+        })
+        .catch(() => {
+          results.push({
+            ...studentData,
+            status: 'error',
+            message: 'Network error'
+          });
+        })
+        .finally(() => {
+          processed++;
+          if (processed === students.length) {
+            displayBulkResults(results);
+            showModal('Bulk Generation Complete', 
+              `Successfully processed ${successCount} out of ${students.length} students.`, 
+              successCount > 0 ? 'success' : 'error');
+          }
+        });
+      });
+    }
+
+    function generateQRCodeData(studentData) {
+      // Add timestamp and expiration date (3 days from now)
+      const now = new Date();
+      const expirationDate = new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days from now
+      
+      const qrData = {
+        ...studentData,
+        generatedAt: now.toISOString(),
+        expiresAt: expirationDate.toISOString(),
+        validUntil: expirationDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        })
+      };
+      
+      return JSON.stringify(qrData);
+    }
+
+    function displayBulkResults(results) {
+      const container = document.getElementById('students-list');
+      const resultsDiv = document.getElementById('bulk-results');
+      
+      container.innerHTML = '';
+      
+      results.forEach((result, index) => {
+        const studentDiv = document.createElement('div');
+        studentDiv.className = 'student-item';
+        
+        const statusIcon = result.status === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        const statusColor = result.status === 'success' ? '#48bb78' : '#f56565';
+        
+        studentDiv.innerHTML = `
+          <div class="student-info">
+            <div class="student-name">${result.name}</div>
+            <div class="student-details">
+              ID: ${result.id} | Class: ${result.class} ${result.team ? `| Team: ${result.team}` : ''}
+            </div>
+            ${result.status === 'success' ? 
+              `<div style="font-size: 0.8em; color: #38a169; margin-top: 4px;">
+                <i class="fas fa-clock"></i> Valid until: ${JSON.parse(result.qrData).validUntil}
+              </div>` : ''
+            }
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="${statusIcon}" style="color: ${statusColor};"></i>
+            ${result.status === 'success' ? 
+              `<button class="download-qr-btn" onclick="downloadStudentQR('${result.name}', '${result.qrData}')">
+                <i class="fas fa-download"></i> QR
+              </button>` : 
+              `<span style="color: ${statusColor}; font-size: 0.8em;">${result.message}</span>`
+            }
+          </div>
+        `;
+        
+        container.appendChild(studentDiv);
+      });
+      
+      resultsDiv.style.display = 'block';
+      
+      // Show download all button only if there are successful QR codes
+      const successfulCount = results.filter(r => r.status === 'success').length;
+      const downloadAllBtn = document.getElementById('download-all-btn');
+      if (successfulCount > 0) {
+        downloadAllBtn.style.display = 'inline-block';
+        downloadAllBtn.innerHTML = `<i class="fas fa-download"></i> Download All QR Codes (${successfulCount})`;
+      } else {
+        downloadAllBtn.style.display = 'none';
+      }
+    }
+
+    function downloadStudentQR(studentName, qrData) {
+      try {
+        // Parse QR data to get student ID
+        const qrDataObj = JSON.parse(qrData);
+        const studentId = qrDataObj.id || 'unknown';
+        
+        // Create temporary QR code
+        const tempDiv = document.createElement('div');
+        tempDiv.style.display = 'none';
+        tempDiv.id = 'temp-qr-container';
+        document.body.appendChild(tempDiv);
+        
+        // Create QR code with a promise to ensure it's ready
+        const createQRCode = () => {
+          return new Promise((resolve, reject) => {
+            try {
+              const qr = new QRCode(tempDiv, {
+                text: qrData,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+              });
+              
+              // Wait a bit for QR to render
+              setTimeout(() => {
+                const qrCanvas = tempDiv.querySelector('canvas');
+                if (qrCanvas) {
+                  resolve(qrCanvas);
+                } else {
+                  reject(new Error('QR canvas not found'));
+                }
+              }, 200);
+            } catch (error) {
+              reject(error);
+            }
+          });
+        };
+        
+        // Generate and download QR code
+        createQRCode().then(qrCanvas => {
+          const exportCanvas = document.createElement('canvas');
+          const borderSize = 40; // White border size in pixels
+          exportCanvas.width = qrCanvas.width + (borderSize * 2);
+          exportCanvas.height = qrCanvas.height + (borderSize * 2);
+          const ctx = exportCanvas.getContext('2d');
+          
+          // Fill entire canvas with white background
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+          
+          // Draw the QR code in the center with border
+          ctx.drawImage(qrCanvas, borderSize, borderSize);
+          
+          // Create descriptive filename with student ID and name
+          const cleanName = studentName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+          const cleanId = studentId.replace(/[^a-zA-Z0-9]/g, '');
+          const filename = `${cleanId}_${cleanName}_QR_Code.png`;
+          
+          // Download
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = exportCanvas.toDataURL('image/png');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Cleanup
+          document.body.removeChild(tempDiv);
+          
+          showModal('Success', `QR code for ${studentName} (${studentId}) downloaded successfully!`, 'success');
+        }).catch(error => {
+          console.error('QR generation error:', error);
+          document.body.removeChild(tempDiv);
+          showModal('Error', 'Failed to generate QR code. Please try again.', 'error');
+        });
+        
+      } catch (error) {
+        console.error('Download error:', error);
+        showModal('Error', 'Failed to download QR code. Please try again.', 'error');
+      }
+    }
+
     function generateQRCode(studentData) {
       const qrContainer = document.getElementById('qrcode');
       qrContainer.innerHTML = '';
       
+      // Add timestamp and expiration date (3 days from now)
+      const now = new Date();
+      const expirationDate = new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)); // 3 days from now
+      
+      const qrDataWithTimestamp = {
+        ...studentData,
+        generatedAt: now.toISOString(),
+        expiresAt: expirationDate.toISOString(),
+        validUntil: expirationDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        })
+      };
+      
       // Create QR code
       qrCode = new QRCode(qrContainer, {
-        text: JSON.stringify(studentData),
+        text: JSON.stringify(qrDataWithTimestamp),
         width: 256,
         height: 256,
-        colorDark: '#000000', // pure black
+        colorDark: '#000000',
         colorLight: '#ffffff',
         correctLevel: QRCode.CorrectLevel.H
       });
@@ -530,6 +1014,33 @@
       // Show QR card
       document.getElementById('qr-card').style.display = 'block';
       document.getElementById('download-btn').style.display = 'inline-block';
+
+      // Update expiry info
+      const expiryDateSpan = document.getElementById('expiry-date');
+      expiryDateSpan.textContent = qrDataWithTimestamp.validUntil;
+      
+      // Add white border to the displayed QR code
+      setTimeout(() => {
+        const qrCanvas = qrContainer.querySelector('canvas');
+        if (qrCanvas) {
+          const borderSize = 20; // Smaller border for display
+          const displayCanvas = document.createElement('canvas');
+          displayCanvas.width = qrCanvas.width + (borderSize * 2);
+          displayCanvas.height = qrCanvas.height + (borderSize * 2);
+          const ctx = displayCanvas.getContext('2d');
+          
+          // Fill with white background
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, displayCanvas.width, displayCanvas.height);
+          
+          // Draw QR code in center
+          ctx.drawImage(qrCanvas, borderSize, borderSize);
+          
+          // Replace the original canvas
+          qrContainer.innerHTML = '';
+          qrContainer.appendChild(displayCanvas);
+        }
+      }, 100);
     }
 
     function downloadQR() {
@@ -540,34 +1051,163 @@
 
       try {
         const qrCanvas = document.querySelector('#qrcode canvas');
-        // Create a new canvas with white background
+        if (!qrCanvas) {
+          showModal('Error', 'QR code canvas not found. Please generate the QR code first.', 'error');
+          return;
+        }
+        
         const exportCanvas = document.createElement('canvas');
-        exportCanvas.width = qrCanvas.width;
-        exportCanvas.height = qrCanvas.height;
+        const borderSize = 40; // White border size in pixels
+        exportCanvas.width = qrCanvas.width + (borderSize * 2);
+        exportCanvas.height = qrCanvas.height + (borderSize * 2);
         const ctx = exportCanvas.getContext('2d');
-        // Fill with white
+        
+        // Fill entire canvas with white background
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
-        // Draw the QR code on top
-        ctx.drawImage(qrCanvas, 0, 0);
-        // Get student name for filename
-        const studentName = document.getElementById('studentName').value.trim().replace(/\s+/g, '_') || 'student';
+        
+        // Draw the QR code in the center with border
+        ctx.drawImage(qrCanvas, borderSize, borderSize);
+        
+        // Get student information for filename
+        const studentName = document.getElementById('studentName').value.trim() || 'student';
+        const studentId = document.getElementById('studentId').value.trim() || 'unknown';
+        
+        // Create descriptive filename with student ID and name
+        const cleanName = studentName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+        const cleanId = studentId.replace(/[^a-zA-Z0-9]/g, '');
+        const filename = `${cleanId}_${cleanName}_QR_Code.png`;
+        
+        // Create download link
         const link = document.createElement('a');
-        link.download = studentName + '-qr.png';
-        link.href = exportCanvas.toDataURL();
+        link.download = filename;
+        link.href = exportCanvas.toDataURL('image/png');
+        
+        // Append to body, click, and remove
+        document.body.appendChild(link);
         link.click();
-        showModal('Success', 'QR code downloaded successfully!', 'success');
+        document.body.removeChild(link);
+        
+        showModal('Success', `QR code for ${studentName} (${studentId}) downloaded successfully!`, 'success');
       } catch (error) {
+        console.error('Download error:', error);
         showModal('Error', 'Failed to download QR code. Please try again.', 'error');
+      }
+    }
+
+    function downloadAllQRCodes() {
+      if (allGeneratedQRCodes.length === 0) {
+        showModal('Error', 'No QR codes to download. Please generate QR codes first.', 'error');
+        return;
+      }
+
+      showModal('Downloading...', `Preparing to download ${allGeneratedQRCodes.length} QR codes. This may take a moment.`, 'info');
+
+      let downloadedCount = 0;
+      const totalCount = allGeneratedQRCodes.length;
+
+      allGeneratedQRCodes.forEach((qrData, index) => {
+        setTimeout(() => {
+          downloadSingleQRFromBulk(qrData.name, qrData.qrData, index, totalCount);
+          downloadedCount++;
+          
+          if (downloadedCount === totalCount) {
+            setTimeout(() => {
+              showModal('Download Complete', `Successfully downloaded ${totalCount} QR codes!`, 'success');
+            }, 500);
+          }
+        }, index * 200); // Stagger downloads by 200ms each
+      });
+    }
+
+    function downloadSingleQRFromBulk(studentName, qrData, index, totalCount) {
+      try {
+        // Parse QR data to get student ID
+        const qrDataObj = JSON.parse(qrData);
+        const studentId = qrDataObj.id || 'unknown';
+        
+        // Create temporary QR code
+        const tempDiv = document.createElement('div');
+        tempDiv.style.display = 'none';
+        tempDiv.id = `temp-qr-container-${index}`;
+        document.body.appendChild(tempDiv);
+        
+        // Create QR code
+        const qr = new QRCode(tempDiv, {
+          text: qrData,
+          width: 256,
+          height: 256,
+          colorDark: '#000000',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+
+        // Wait for QR to generate
+        setTimeout(() => {
+          const qrCanvas = tempDiv.querySelector('canvas');
+          if (qrCanvas) {
+            const exportCanvas = document.createElement('canvas');
+            const borderSize = 40; // White border size in pixels
+            exportCanvas.width = qrCanvas.width + (borderSize * 2);
+            exportCanvas.height = qrCanvas.height + (borderSize * 2);
+            const ctx = exportCanvas.getContext('2d');
+            
+            // Fill entire canvas with white background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+            
+            // Draw the QR code in the center with border
+            ctx.drawImage(qrCanvas, borderSize, borderSize);
+            
+            // Create descriptive filename with student ID and name
+            const cleanName = studentName.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+            const cleanId = studentId.replace(/[^a-zA-Z0-9]/g, '');
+            const filename = `${cleanId}_${cleanName}_QR_Code.png`;
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = exportCanvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Cleanup
+            document.body.removeChild(tempDiv);
+          }
+        }, 100);
+      } catch (error) {
+        console.error('Bulk download error for', studentName, error);
+      }
+    }
+
+    // Debug function to check QR code status
+    function debugQRCode() {
+      const qrCanvas = document.querySelector('#qrcode canvas');
+      const tempCanvas = document.querySelector('#temp-qr-container canvas');
+      
+      console.log('QR Code Debug Info:');
+      console.log('Main QR Canvas:', qrCanvas);
+      console.log('Temp QR Canvas:', tempCanvas);
+      console.log('QR Code object:', qrCode);
+      
+      if (qrCanvas) {
+        console.log('Main QR Canvas dimensions:', qrCanvas.width, 'x', qrCanvas.height);
+      }
+      if (tempCanvas) {
+        console.log('Temp QR Canvas dimensions:', tempCanvas.width, 'x', tempCanvas.height);
       }
     }
 
     // Welcome message
     window.onload = function() {
       setTimeout(() => {
-        showModal('Welcome', 'Enter student information to generate a QR code for attendance tracking.', 'info');
+        showModal('Welcome', 'Choose between single student QR generation or bulk generation from Excel file.', 'info');
       }, 500);
     }
   </script>
+  
+  <!-- SheetJS library for Excel parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </body>
 </html> 

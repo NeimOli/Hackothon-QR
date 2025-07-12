@@ -18,32 +18,39 @@
     body {
       font-family: 'Roboto', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      margin: 0;
-      padding: 0;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow-x: hidden;
+      /* Animated background gradient */
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease-in-out infinite;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     .container {
       max-width: 550px;
       width: 95%;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
       padding: 0;
       text-align: center;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      animation: slideUp 0.8s ease-out;
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      animation: slideUp 0.8s cubic-bezier(.23,1.02,.32,1);
       overflow: hidden;
     }
 
     @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px);
       }
       to {
         opacity: 1;
@@ -54,101 +61,182 @@
     .header {
       width: 100%;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      padding: 40px 30px 30px 30px;
+      padding: 44px 30px 32px 30px;
       color: white;
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.18);
     }
 
     .header-icon {
-      width: 80px;
-      height: 80px;
-      background: rgba(255, 255, 255, 0.2);
+      width: 84px;
+      height: 84px;
+      background: rgba(255, 255, 255, 0.22);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 20px;
+      margin: 0 auto 22px;
       backdrop-filter: blur(10px);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2.5px solid rgba(255, 255, 255, 0.32);
+      box-shadow: 0 2px 12px rgba(102, 126, 234, 0.12);
+      animation: popIn 0.7s cubic-bezier(.23,1.02,.32,1);
+    }
+    @keyframes popIn {
+      0% {transform: scale(0.7); opacity: 0;}
+      100% {transform: scale(1); opacity: 1;}
     }
 
     .header-icon i {
-      font-size: 2.5em;
+      font-size: 2.7em;
       color: white;
+      filter: drop-shadow(0 2px 6px #667eea88);
     }
 
     .header h2 {
       margin: 0;
-      font-size: 1.8em;
+      font-size: 2em;
       font-weight: 700;
       letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px #667eea33;
     }
 
     .header p {
-      margin: 8px 0 0 0;
-      opacity: 0.9;
-      font-size: 1em;
+      margin: 10px 0 0 0;
+      opacity: 0.93;
+      font-size: 1.08em;
     }
 
     .content {
-      padding: 40px 30px;
+      padding: 44px 30px 36px 30px;
     }
 
     #reader {
-      margin: 0 auto 30px auto;
+      margin: 0 auto 32px auto;
       background: linear-gradient(135deg, #f7fafc, #edf2f7);
-      padding: 20px;
-      border-radius: 20px;
+      padding: 0;
+      border-radius: 24px;
       display: flex;
       justify-content: center;
       align-items: center;
       width: 100%;
-      max-width: 400px;
-      min-height: 300px;
-      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15);
-      border: 1px solid rgba(102, 126, 234, 0.1);
+      max-width: 410px;
+      min-height: 320px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.18);
+      border: 1.5px solid rgba(102, 126, 234, 0.13);
       position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.3s;
+      animation: fadeInUp 0.7s cubic-bezier(.23,1.02,.32,1);
     }
 
+    /* Focus overlay */
     #reader::before {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      height: 200px;
-      border: 2px dashed rgba(102, 126, 234, 0.3);
-      border-radius: 12px;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(40, 56, 90, 0.18);
+      z-index: 1;
       pointer-events: none;
-      animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.6; }
+    /* Animated glowing scan frame */
+    .scan-overlay {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: 220px;
+      z-index: 2;
+      pointer-events: none;
+      box-shadow: 0 0 0 6px rgba(102,126,234,0.08);
     }
+    .scan-glow {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      border-radius: 18px;
+      box-shadow: 0 0 24px 6px #667eea88, 0 0 60px 12px #764ba244;
+      animation: glowPulse 2.2s infinite alternate;
+      pointer-events: none;
+    }
+    @keyframes glowPulse {
+      0% { box-shadow: 0 0 24px 6px #667eea88, 0 0 60px 12px #764ba244; }
+      100% { box-shadow: 0 0 36px 12px #667eeacc, 0 0 80px 20px #764ba288; }
+    }
+    .scan-corners {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+    .scan-corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border: 4px solid #667eea;
+      border-radius: 6px;
+      box-shadow: 0 0 8px #667eea88;
+      animation: cornerPulse 1.5s infinite alternate;
+    }
+    @keyframes cornerPulse {
+      0% { border-color: #667eea; }
+      100% { border-color: #764ba2; }
+    }
+    .scan-corner.top-left { top: 0; left: 0; border-right: none; border-bottom: none; }
+    .scan-corner.top-right { top: 0; right: 0; border-left: none; border-bottom: none; }
+    .scan-corner.bottom-left { bottom: 0; left: 0; border-right: none; border-top: none; }
+    .scan-corner.bottom-right { bottom: 0; right: 0; border-left: none; border-top: none; }
 
+    /* Camera video styling */
     #reader video {
-      border-radius: 12px;
+      border-radius: 16px;
       max-width: 100%;
       height: auto;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.13);
+      z-index: 0;
+      position: relative;
+    }
+
+    .scan-indicator {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 22px;
+      font-size: 1em;
+      font-weight: 700;
+      display: none;
+      animation: scanningPulse 1.5s infinite;
+      z-index: 10;
+      box-shadow: 0 2px 8px #38a16944;
+    }
+    @keyframes scanningPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .scan-indicator i {
+      margin-right: 6px;
+      animation: spin 1.2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     .scan-status {
       background: linear-gradient(135deg, #f7fafc, #edf2f7);
       color: #2d3748;
-      border-radius: 16px;
-      padding: 20px;
-      font-size: 1.1em;
-      margin: 20px auto;
-      max-width: 400px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 22px;
+      font-size: 1.13em;
+      margin: 24px auto 0 auto;
+      max-width: 410px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.11);
+      border: 1.5px solid #e2e8f0;
       display: none;
-      animation: fadeInUp 0.6s ease;
+      animation: fadeInUp 0.7s cubic-bezier(.23,1.02,.32,1);
+      transition: background 0.4s, color 0.4s;
     }
-
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -159,90 +247,96 @@
         transform: translateY(0);
       }
     }
-
     .scan-status.success {
       background: linear-gradient(135deg, #f0fff4, #e6fffa);
       border-color: #48bb78;
       color: #22543d;
+      animation: successPulse 0.6s cubic-bezier(.23,1.02,.32,1);
     }
-
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
     .scan-status.error {
       background: linear-gradient(135deg, #fff5f5, #fed7d7);
       border-color: #f56565;
       color: #742a2a;
     }
-
     .scan-status.info {
       background: linear-gradient(135deg, #ebf8ff, #bee3f8);
       border-color: #4299e1;
       color: #2a4365;
     }
-
     .scan-status i {
-      margin-right: 8px;
-      font-size: 1.2em;
+      margin-right: 10px;
+      font-size: 1.25em;
+      vertical-align: middle;
     }
 
     .controls {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       justify-content: center;
-      margin-top: 24px;
+      margin-top: 28px;
       flex-wrap: wrap;
     }
-
     .control-btn {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       border: none;
-      border-radius: 12px;
-      padding: 12px 24px;
-      font-size: 1em;
-      font-weight: 600;
+      border-radius: 14px;
+      padding: 14px 28px;
+      font-size: 1.08em;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+      transition: all 0.25s cubic-bezier(.23,1.02,.32,1);
+      box-shadow: 0 4px 16px rgba(102, 126, 234, 0.28);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      outline: none;
+      position: relative;
+      overflow: hidden;
     }
-
+    .control-btn:active {
+      transform: scale(0.97);
+    }
     .control-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 28px rgba(102, 126, 234, 0.38);
+      background: linear-gradient(135deg, #764ba2, #667eea);
     }
-
     .control-btn.secondary {
       background: linear-gradient(135deg, #a0aec0, #718096);
     }
-
     .control-btn.secondary:hover {
       box-shadow: 0 8px 24px rgba(160, 174, 192, 0.4);
+      background: linear-gradient(135deg, #718096, #a0aec0);
     }
 
     .back-link {
       color: #667eea;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
-      margin-top: 24px;
-      padding: 12px 24px;
-      border-radius: 12px;
-      background: rgba(102, 126, 234, 0.1);
-      transition: all 0.3s ease;
+      margin-top: 28px;
+      padding: 14px 28px;
+      border-radius: 14px;
+      background: rgba(102, 126, 234, 0.13);
+      transition: all 0.3s cubic-bezier(.23,1.02,.32,1);
+      font-size: 1.08em;
     }
-
     .back-link i {
-      margin-right: 8px;
+      margin-right: 10px;
     }
-
     .back-link:hover {
-      background: rgba(102, 126, 234, 0.2);
-      transform: translateY(-2px);
+      background: rgba(102, 126, 234, 0.22);
+      transform: translateY(-2px) scale(1.03);
     }
 
-    /* Modal Styles */
+    /* Modal Styles (unchanged) */
     .modal {
       display: none;
       position: fixed;
@@ -255,12 +349,10 @@
       backdrop-filter: blur(5px);
       animation: fadeIn 0.3s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
     .modal-content {
       background: white;
       margin: 15% auto;
@@ -272,7 +364,6 @@
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
       animation: slideDown 0.3s ease;
     }
-
     @keyframes slideDown {
       from {
         opacity: 0;
@@ -283,7 +374,6 @@
         transform: translateY(0);
       }
     }
-
     .modal-icon {
       width: 60px;
       height: 60px;
@@ -294,35 +384,29 @@
       margin: 0 auto 20px;
       font-size: 1.8em;
     }
-
     .modal-icon.success {
       background: linear-gradient(135deg, #48bb78, #38a169);
       color: white;
     }
-
     .modal-icon.error {
       background: linear-gradient(135deg, #f56565, #e53e3e);
       color: white;
     }
-
     .modal-icon.info {
       background: linear-gradient(135deg, #4299e1, #3182ce);
       color: white;
     }
-
     .modal h3 {
       color: #2d3748;
       margin-bottom: 12px;
       font-size: 1.4em;
       font-weight: 600;
     }
-
     .modal p {
       color: #718096;
       margin-bottom: 24px;
       line-height: 1.6;
     }
-
     .modal-btn {
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
@@ -334,7 +418,6 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .modal-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
@@ -342,36 +425,34 @@
 
     @media (max-width: 600px) {
       .container {
-        width: 98%;
-        border-radius: 16px;
+        width: 99%;
+        border-radius: 18px;
       }
-      
       .header {
-        padding: 30px 20px 20px 20px;
+        padding: 28px 10px 18px 10px;
       }
-      
       .header h2 {
-        font-size: 1.5em;
+        font-size: 1.3em;
       }
-      
       .content {
-        padding: 30px 20px;
+        padding: 18px 6px 18px 6px;
       }
-      
       #reader {
-        min-height: 250px;
-        padding: 16px;
+        min-height: 180px;
+        padding: 0;
       }
-      
       .controls {
         flex-direction: column;
         align-items: center;
       }
-      
       .control-btn {
         width: 100%;
-        max-width: 200px;
+        max-width: 220px;
         justify-content: center;
+      }
+      .scan-overlay {
+        width: 140px;
+        height: 140px;
       }
     }
   </style>
@@ -387,11 +468,35 @@
     </div>
 
     <div class="content">
-      <div id="reader"></div>
+      <div id="reader">
+        <div class="scan-overlay">
+          <div class="scan-corners">
+            <div class="scan-corner top-left"></div>
+            <div class="scan-corner top-right"></div>
+            <div class="scan-corner bottom-left"></div>
+            <div class="scan-corner bottom-right"></div>
+          </div>
+        </div>
+        <div class="scan-indicator">
+          <i class="fas fa-sync-alt"></i> Scanning...
+        </div>
+      </div>
       
       <div id="scanStatus" class="scan-status">
         <i class="fas fa-info-circle"></i>
         <span id="statusMessage">Ready to scan</span>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #ebf8ff, #bee3f8); border: 1px solid #4299e1; border-radius: 12px; padding: 16px; margin: 20px auto; max-width: 400px; color: #2a4365;">
+        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+          <i class="fas fa-info-circle" style="margin-right: 8px; color: #4299e1;"></i>
+          <strong>Important:</strong>
+        </div>
+        <div style="font-size: 0.9em; line-height: 1.4;">
+          • Each student can only scan once per day<br>
+          • QR codes are valid for 3 days from generation<br>
+          • Attendance is automatically recorded with timestamp
+        </div>
       </div>
 
       <div class="controls">
@@ -448,6 +553,10 @@
       document.getElementById('modal').style.display = 'block';
     }
 
+    function showInfoModal(message) {
+      showModal('Information', message, 'info');
+    }
+
     function closeModal() {
       document.getElementById('modal').style.display = 'none';
     }
@@ -484,13 +593,48 @@
         return;
       }
 
+      // Check if HTML5 QR Code library is loaded
+      if (typeof Html5QrcodeScanner === 'undefined') {
+        showModal('Error', 'QR Scanner library not loaded. Please refresh the page and try again.', 'error');
+        console.error('Html5QrcodeScanner not available');
+        return;
+      }
+
+      // Check if reader element exists
+      const readerElement = document.getElementById('reader');
+      if (!readerElement) {
+        showModal('Error', 'Scanner element not found. Please refresh the page.', 'error');
+        console.error('Reader element not found');
+        return;
+      }
+
       try {
+        // Clear any existing content in reader
+        readerElement.innerHTML = `
+          <div class="scan-overlay">
+            <div class="scan-corners">
+              <div class="scan-corner top-left"></div>
+              <div class="scan-corner top-right"></div>
+              <div class="scan-corner bottom-left"></div>
+              <div class="scan-corner bottom-right"></div>
+            </div>
+          </div>
+          <div class="scan-indicator">
+            <i class="fas fa-sync-alt"></i> Scanning...
+          </div>
+        `;
+
         html5QrcodeScanner = new Html5QrcodeScanner(
           "reader",
           { 
             fps: 10, 
             qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0
+            aspectRatio: 1.0,
+            disableFlip: false,
+            rememberLastUsedCamera: true,
+            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+            showTorchButtonIfSupported: true,
+            showZoomSliderIfSupported: true
           },
           false
         );
@@ -499,27 +643,141 @@
         isScanning = true;
         showStatus('Scanner started. Point camera at QR code.', 'info');
         
-        showModal('Success', 'QR scanner started successfully! Point your camera at a student\'s QR code.', 'success');
+        // Safely show scan indicator
+        const scanIndicator = document.querySelector('.scan-indicator');
+        if (scanIndicator) {
+          scanIndicator.style.display = 'block';
+        }
+        
+        // Remove the success modal to avoid blocking the scanner
+        // showModal('Success', 'QR scanner started successfully! Point your camera at a student\'s QR code.', 'success');
+        
       } catch (error) {
-        showModal('Error', 'Failed to start scanner. Please check camera permissions.', 'error');
-        console.error('Scanner error:', error);
+        console.error('Scanner initialization error:', error);
+        
+        // More specific error messages
+        if (error.message && error.message.includes('camera')) {
+          showModal('Camera Error', 'Camera access denied. Please allow camera permissions and try again.', 'error');
+        } else if (error.message && error.message.includes('HTTPS')) {
+          showModal('Security Error', 'Camera access requires HTTPS. Please use a secure connection.', 'error');
+        } else {
+          showModal('Scanner Error', 'Failed to start scanner. Please check camera permissions and try again.', 'error');
+        }
+        
+        // Reset state
+        isScanning = false;
+        html5QrcodeScanner = null;
       }
     }
 
     function stopScanning() {
       if (html5QrcodeScanner && isScanning) {
-        html5QrcodeScanner.clear();
-        isScanning = false;
-        showStatus('Scanner stopped.', 'info');
-        showModal('Info', 'QR scanner stopped.', 'info');
+        try {
+          html5QrcodeScanner.clear();
+          isScanning = false;
+          showStatus('Scanner stopped.', 'info');
+          
+          // Safely hide scan indicator
+          const scanIndicator = document.querySelector('.scan-indicator');
+          if (scanIndicator) {
+            scanIndicator.style.display = 'none';
+          }
+          
+          showModal('Info', 'QR scanner stopped.', 'info');
+        } catch (error) {
+          console.error('Error stopping scanner:', error);
+          // Force reset state even if clear fails
+          isScanning = false;
+          html5QrcodeScanner = null;
+          showStatus('Scanner stopped with errors.', 'error');
+          
+          // Safely hide scan indicator even on error
+          const scanIndicator = document.querySelector('.scan-indicator');
+          if (scanIndicator) {
+            scanIndicator.style.display = 'none';
+          }
+        }
       } else {
         showModal('Info', 'Scanner is not running.', 'info');
       }
     }
 
+    function isScannerReady() {
+      return typeof Html5QrcodeScanner !== 'undefined' && 
+             document.getElementById('reader') !== null;
+    }
+
+    function refreshScanner() {
+      try {
+        if (html5QrcodeScanner && isScanning) {
+          html5QrcodeScanner.clear();
+          isScanning = false;
+        }
+        
+        // Clear status
+        showStatus('Scanner refreshed. Ready for next scan.', 'info');
+        
+        // Restart scanner after a short delay
+        setTimeout(() => {
+          if (isScannerReady()) {
+            startScanning();
+          } else {
+            showStatus('Scanner not ready. Please refresh the page.', 'error');
+          }
+        }, 500);
+      } catch (error) {
+        console.error('Error refreshing scanner:', error);
+        // Force reset state
+        isScanning = false;
+        html5QrcodeScanner = null;
+        showStatus('Error refreshing scanner. Please try again.', 'error');
+      }
+    }
+
     function onScanSuccess(decodedText, decodedResult) {
+      console.log('QR Code detected:', decodedText);
+      
       try {
         const studentData = JSON.parse(decodedText);
+        console.log('Parsed student data:', studentData);
+        
+        // Validate required fields
+        if (!studentData.id || !studentData.name) {
+          showStatus('Invalid QR code: Missing student information', 'error');
+          showModal('Invalid QR Code', 'This QR code does not contain valid student information. Please use a proper student QR code.', 'error');
+          
+          setTimeout(() => {
+            refreshScanner();
+          }, 3000);
+          return;
+        }
+        
+        // Validate QR code expiration
+        if (studentData.expiresAt) {
+          const now = new Date();
+          const expirationDate = new Date(studentData.expiresAt);
+          
+          if (now > expirationDate) {
+            showStatus(`QR code expired for ${studentData.name}`, 'error');
+            showModal('QR Code Expired', 
+              `This QR code for ${studentData.name} has expired. It was valid until ${studentData.validUntil || 'the expiration date'}. Please generate a new QR code.`, 
+              'error');
+            
+            setTimeout(() => {
+              refreshScanner();
+            }, 3000);
+            return;
+          }
+          
+          // Calculate days remaining
+          const daysRemaining = Math.ceil((expirationDate - now) / (1000 * 60 * 60 * 24));
+          const validityMessage = daysRemaining > 1 ? `${daysRemaining} days remaining` : 'Last day of validity';
+          
+          showStatus(`QR code valid for ${studentData.name} - ${validityMessage}`, 'info');
+        }
+        
+        // Show processing status
+        showStatus(`Processing attendance for ${studentData.name}...`, 'info');
         
         // Send attendance data to backend
         fetch('http://localhost:3000/attendance', {
@@ -529,45 +787,97 @@
           },
           body: JSON.stringify(studentData)
         })
-        .then(response => response.json())
+        .then(response => {
+          console.log('Backend response status:', response.status);
+          return response.json();
+        })
         .then(data => {
+          console.log('Backend response data:', data);
+          
           if (data.status === 'success') {
             showStatus(`Attendance recorded for ${studentData.name} (${studentData.id})`, 'success');
             showModal('Success', `Attendance successfully recorded for ${studentData.name}!`, 'success');
+            
+            // Auto-refresh after successful scan
+            setTimeout(() => {
+              refreshScanner();
+            }, 2000);
+            
           } else if (data.status === 'duplicate') {
             showStatus(`Attendance already recorded for ${studentData.name} today`, 'error');
-            showModal('Info', `Attendance already recorded for ${studentData.name} today.`, 'info');
+            const recordedTime = data.recordedTime ? new Date(data.recordedTime).toLocaleTimeString() : 'earlier today';
+            showModal('Attendance Already Recorded', 
+              `Attendance for ${studentData.name} has already been recorded today at ${recordedTime}. Each student can only scan once per day.`, 
+              'info');
+            
+            // Auto-refresh after duplicate scan
+            setTimeout(() => {
+              refreshScanner();
+            }, 3000);
+            
+          } else if (data.status === 'expired') {
+            showStatus(`QR code expired for ${studentData.name}`, 'error');
+            showModal('QR Code Expired', 
+              `This QR code for ${studentData.name} has expired. ${data.message || 'Please generate a new QR code.'}`, 
+              'error');
+            
+            // Auto-refresh after expired scan
+            setTimeout(() => {
+              refreshScanner();
+            }, 3000);
+            
           } else {
             showStatus('Failed to record attendance', 'error');
-            showModal('Error', 'Failed to record attendance. Please try again.', 'error');
+            showModal('Error', `Failed to record attendance: ${data.message || 'Unknown error'}`, 'error');
+            
+            // Auto-refresh after error
+            setTimeout(() => {
+              refreshScanner();
+            }, 3000);
           }
         })
         .catch(error => {
-          console.error('Error:', error);
+          console.error('Network error:', error);
           showStatus('Network error. Please try again.', 'error');
           showModal('Error', 'Network error. Please check your connection and try again.', 'error');
+          
+          // Auto-refresh after network error
+          setTimeout(() => {
+            refreshScanner();
+          }, 3000);
         });
 
-        // Stop scanning after successful scan
-        setTimeout(() => {
-          stopScanning();
-        }, 2000);
-
       } catch (error) {
+        console.error('QR parsing error:', error);
         showStatus('Invalid QR code format', 'error');
         showModal('Error', 'Invalid QR code format. Please use a valid student QR code.', 'error');
+        
+        // Auto-refresh after invalid QR
+        setTimeout(() => {
+          refreshScanner();
+        }, 3000);
       }
     }
 
     function onScanFailure(error) {
-      // Handle scan failure silently
-      console.warn(`QR scan failed: ${error}`);
+      // Only log if it's not the common "no QR found" error
+      if (!error.toString().includes('No MultiFormat Readers')) {
+        console.warn(`QR scan error: ${error}`);
+      }
     }
 
     // Welcome message
     window.onload = function() {
+      // Check if scanner library is loaded
+      if (!isScannerReady()) {
+        setTimeout(() => {
+          showModal('Library Error', 'QR Scanner library failed to load. Please refresh the page and ensure you have a stable internet connection.', 'error');
+        }, 1000);
+        return;
+      }
+
       setTimeout(() => {
-        showModal('Welcome', 'Click "Start Scanning" to begin recording attendance. Point your camera at a student\'s QR code.', 'info');
+        showModal('Welcome', 'Click "Start Scanning" to begin recording attendance. Each student can only scan once per day. Point your camera at a student\'s QR code.', 'info');
       }, 500);
     }
 

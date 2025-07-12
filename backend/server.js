@@ -20,6 +20,19 @@ app.post('/attendance', (req, res) => {
   const student = req.body;
   let workbook, worksheet, data = [];
 
+  // Validate QR code expiration (if QR has timestamp data)
+  if (student.expiresAt) {
+    const now = new Date();
+    const expirationDate = new Date(student.expiresAt);
+    
+    if (now > expirationDate) {
+      return res.json({ 
+        status: 'expired', 
+        message: `QR code expired. Valid until ${student.validUntil || expirationDate.toLocaleDateString()}` 
+      });
+    }
+  }
+
   // Load or create workbook
   if (fs.existsSync(EXCEL_FILE)) {
     workbook = XLSX.readFile(EXCEL_FILE);
@@ -31,8 +44,14 @@ app.post('/attendance', (req, res) => {
 
   // Check for duplicate attendance for today
   const today = new Date().toISOString().slice(0, 10);
-  if (data.some(s => s.id === student.id && s.timestamp && s.timestamp.slice(0, 10) === today)) {
-    return res.json({ status: 'duplicate' });
+  const existingAttendance = data.find(s => s.id === student.id && s.timestamp && s.timestamp.slice(0, 10) === today);
+  
+  if (existingAttendance) {
+    return res.json({ 
+      status: 'duplicate',
+      message: `Attendance already recorded for ${student.name} today at ${existingAttendance.timestamp}`,
+      recordedTime: existingAttendance.timestamp
+    });
   }
 
   // Add Nepali (Asia/Kathmandu) timestamp
@@ -161,6 +180,34 @@ app.get('/stats', (req, res) => {
   }
   const attendanceRate = totalStudents > 0 ? Math.round((presentToday / totalStudents) * 100) : 0;
   res.json({ totalStudents, presentToday, attendanceRate });
+});
+
+// Endpoint to check if student is already present today
+app.get('/check-attendance/:studentId', (req, res) => {
+  const studentId = req.params.studentId;
+  let data = [];
+
+  if (fs.existsSync(EXCEL_FILE)) {
+    const workbook = XLSX.readFile(EXCEL_FILE);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    data = XLSX.utils.sheet_to_json(worksheet);
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const todayAttendance = data.find(s => s.id === studentId && s.timestamp && s.timestamp.slice(0, 10) === today);
+
+  if (todayAttendance) {
+    res.json({
+      status: 'present',
+      message: `Student already marked present today at ${todayAttendance.timestamp}`,
+      recordedTime: todayAttendance.timestamp
+    });
+  } else {
+    res.json({
+      status: 'absent',
+      message: 'Student not marked present today'
+    });
+  }
 });
 
 app.listen(PORT, '0.0.0.0', () => {
